@@ -1,0 +1,34 @@
+{
+  "name": "hardhat-template",
+  "version": "1.0.0",
+  "description": "Solidity development template using hardhat",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx hardhat clean && npx hardhat coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OMNI-Laboratories/hardhat-template.git"
+  },
+  "keywords": [
+    "ethereum",
+    "solidity",
+    "hardhat",
+    "evm"
+  ],
+  "author": "Amir M. Shirif",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/OMNI-Laboratories/hardhat-template/issues"
+  },
+  "homepage": "https://github.com/OMNI-Laboratories/hardhat-template#readme",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox-viem": "^2.0.0",
+    "hardhat": "^2.20.1",
+    "solidity-docgen": "^0.6.0-beta.36"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1",
+    "@openzeppelin/contracts-upgradeable": "^5.0.1"
+  }
+}
