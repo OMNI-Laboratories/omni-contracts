@@ -4,6 +4,10 @@ import 'solidity-docgen';
 
 /** @type import('hardhat/config').HardhatUserConfig */
 const config: HardhatUserConfig = {
+  defaultNetwork: "hardhat",
+  networks: {
+    hardhat: {}
+  },
   solidity: {
     compilers: [
       {
