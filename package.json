@@ -1,14 +1,18 @@
 {
-  "name": "hardhat-template",
+  "name": "omni-contracts",
   "version": "1.0.0",
-  "description": "Solidity development template using hardhat",
+  "description": "Solidity development using hardhat",
+  "files": [
+    "**/*.sol",
+    "!/mocks/**/*"
+  ],
   "main": "index.js",
   "scripts": {
     "test": "npx hardhat clean && npx hardhat coverage"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OMNI-Laboratories/hardhat-template.git"
+    "url": "git+https://github.com/OMNI-Laboratories/omni-contracts.git"
   },
   "keywords": [
     "ethereum",
@@ -19,9 +23,9 @@
   "author": "Amir M. Shirif",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/OMNI-Laboratories/hardhat-template/issues"
+    "url": "https://github.com/OMNI-Laboratories/omni-contracts/issues"
   },
-  "homepage": "https://github.com/OMNI-Laboratories/hardhat-template#readme",
+  "homepage": "https://github.com/OMNI-Laboratories/omni-contracts#readme",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox-viem": "^2.0.0",
     "hardhat": "^2.20.1",

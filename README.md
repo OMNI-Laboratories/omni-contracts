@@ -4,7 +4,7 @@
 
 ---
 
-# Solidity Template
+# OMNI Contracts
 
 <!-- [![NPM Package](https://img.shields.io/npm/v/@openzeppelin/contracts.svg)](https://www.npmjs.org/package/@openzeppelin/contracts) -->
 ![hardhat](https://img.shields.io/badge/hardhat-2.20.1-blue)
@@ -13,8 +13,6 @@
 <!-- ![coverage](https://img.shields.io/badge/coverage->80%25-yellowgreen) -->
 <!-- ![comments](https://img.shields.io/badge/comments->80%25-yellowgreen) -->
 <!-- [![Docs](https://img.shields.io/badge/docs-%F0%9F%93%84-yellow)](https://docs.openzeppelin.com/contracts) -->
-
-Template for Hardhat Smart Contracts
 
 ```shell
 npm install
