@@ -1,66 +1,50 @@
-## Foundry
+<div align="center">
+  <img src="images/omni-logo.png" alt="OMNI Laboratories" height="140px" style="border-radius: 20px;">
+</div>
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+---
 
-Foundry consists of:
+# OMNI Contracts
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+[![Docs](https://img.shields.io/badge/OMNI-%F0%9F%93%84-purple)](TODO)
+![forge](https://img.shields.io/badge/forge-0.2.0-brown)
+![solidity](https://img.shields.io/badge/solidity-^0.8.25-red)
+![coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
+![comments](https://img.shields.io/badge/comments->80%25-yellow)
 
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
+[![Docs](https://img.shields.io/badge/OpenZeppelin-%F0%9F%93%84-blue)](https://docs.openzeppelin.com/contracts)
+[![NPM Package](https://img.shields.io/npm/v/@openzeppelin/contracts.svg)](https://www.npmjs.org/package/@openzeppelin/contracts)
 
 ```shell
-$ forge build
+npm install
 ```
 
-### Test
+## Running Tests
+
+Contracts that are used for testing should be labeled with the `Test` prefix. Those that are representative of a live contract, but are augmented for easier tested should be labeled with the `Mock` prefix.
+
+To get started, all you should need to install dependencies and run the unit tests are here.
 
 ```shell
-$ forge test
+forge test
+forge test -vvv --match-contract [ContractName] --match-test [TestName]
 ```
 
-### Format
-
 ```shell
-$ forge fmt
+forge coverage
+forge coverage --report lcov
 ```
 
-### Gas Snapshots
+Coverage Gutters
+`⌘ shift 7` || `ctrl shift 7`
 
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+```txt
+  /######  /##      /## /##   /## /######       /##        /######  /#######   /###### 
+ /##__  ##| ###    /###| ### | ##|_  ##_/      | ##       /##__  ##| ##__  ## /##__  ##
+| ##  \ ##| ####  /####| ####| ##  | ##        | ##      | ##  \ ##| ##  \ ##| ##  \__/
+| ##  | ##| ## ##/## ##| ## ## ##  | ##        | ##      | ########| ####### |  ###### 
+| ##  | ##| ##  ###| ##| ##  ####  | ##        | ##      | ##__  ##| ##__  ## \____  ##
+| ##  | ##| ##\  # | ##| ##\  ###  | ##        | ##      | ##  | ##| ##  \ ## /##  \ ##
+|  ######/| ## \/  | ##| ## \  ## /######      | ########| ##  | ##| #######/|  ######/
+ \______/ |__/     |__/|__/  \__/|______/      |________/|__/  |__/|_______/  \______/ 
 ```

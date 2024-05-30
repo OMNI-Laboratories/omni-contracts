@@ -1,0 +1,32 @@
+{
+  "name": "omni-contracts",
+  "version": "0.1.0",
+  "description": "Solidity Smart Contracts",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "forge test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OMNI-Laboratories/omni-contracts.git"
+  },
+  "keywords": [
+    "ethereum",
+    "evm",
+    "foundry",
+    "solidity"
+  ],
+  "author": "Amir M. Shirif",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/OMNI-Laboratories/omni-contracts/issues"
+  },
+  "homepage": "https://github.com/OMNI-Laboratories/omni-contracts#readme",
+  "devDependencies": {
+    "solhint": "^4.5.4"
+  }
+}
