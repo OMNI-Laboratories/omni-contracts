@@ -117,6 +117,10 @@ abstract contract Wallet is EIP712Upgradeable, NoncesUpgradeable {
         return nonces(address(this));
     }
 
+    /**
+     * @dev Returns the domain separator
+     * @return bytes32 Returns the domain separator for the current chain.
+     */
     function domainSeparator() public view virtual returns (bytes32) {
         return _domainSeparatorV4();
     }
@@ -196,4 +200,7 @@ abstract contract Wallet is EIP712Upgradeable, NoncesUpgradeable {
             values.length != data.length
         ) revert InvalidPayload();
     }
+
+    /// recieve native currency
+    receive() external payable {}
 }

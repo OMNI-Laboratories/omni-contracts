@@ -4,6 +4,7 @@ pragma solidity ^0.8.25;
 import {AccessManagedUpgradeable} from "@openzeppelin/contracts-upgradeable/access/manager/AccessManagedUpgradeable.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import {Treason} from "../utils/access/Treason.sol";
+import {ERC20Recoverable, IERC20} from "./utils/ERC20Recoverable.sol";
 import {ERC20Base, ERC20Upgradeable} from "./ERC20Base.sol";
 
 /**
@@ -17,6 +18,7 @@ import {ERC20Base, ERC20Upgradeable} from "./ERC20Base.sol";
  */
 contract ERC20Bridged is
     ERC20Base,
+    ERC20Recoverable,
     AccessManagedUpgradeable,
     PausableUpgradeable,
     Treason
@@ -58,8 +60,8 @@ contract ERC20Bridged is
         uint8 decimal,
         uint256 initialMint
     ) internal onlyInitializing {
-        __ERC20Base_init(name, symbol, decimal, initialMint);
         __ERC20Bridged_init_unchained(initialAuthority);
+        __ERC20Base_init(name, symbol, decimal, initialMint);
     }
 
     /// @dev Internal function to chain initialization calls for setting up the contract.
@@ -124,6 +126,24 @@ contract ERC20Bridged is
         loyal(authority(), to)
     {
         ERC20Upgradeable._update(from, to, value);
+    }
+
+    /************************************************
+     *   support
+     ************************************************/
+
+    /**
+     * @notice Allows recovery of ERC20 tokens sent to this contract by mistake.
+     * @param token The ERC20 token contract of the tokens to recover.
+     * @param destination The address to which the recovered tokens will be sent.
+     * @param amount The amount of tokens to recover and send to the destination.
+     */
+    function ERC20Recover(
+        IERC20 token,
+        address destination,
+        uint256 amount
+    ) external restricted {
+        _recover(token, destination, amount);
     }
 
     /************************************************

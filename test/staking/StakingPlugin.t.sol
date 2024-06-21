@@ -15,12 +15,11 @@ contract StakingPluginTest is Test, StakingPlugin {
     TestToken internal token;
     AccessManager internal manager;
 
-    constructor() StakingPlugin(address(0), IERC20(address(0))) {}
-
     function setUp() public {
         manager = new AccessManager(address(101));
         token = new TestToken();
-        plugin = new StakingPlugin(address(manager), token);
+        plugin = new StakingPlugin();
+        plugin.initialize(address(manager), token);
 
         bytes4[] memory selectors = new bytes4[](3);
         selectors[0] = StakingPlugin.claim.selector;
@@ -34,9 +33,9 @@ contract StakingPluginTest is Test, StakingPlugin {
         manager.setTargetFunctionRole(address(plugin), selectors, TESTING_ROLE);
     }
 
-    function test_Construction() public {
-        StakingPlugin p = new StakingPlugin(address(manager), token);
-        assert(p.rewardToken() == token);
+    function test_Initalization() public view {
+        // StakingPlugin p = new StakingPlugin(address(manager), token);
+        assert(plugin.rewardToken() == token);
     }
 
     function test_SupportsInterface() public view {

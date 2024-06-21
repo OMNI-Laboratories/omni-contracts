@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.25;
 
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {AccessManagedUpgradeable} from "@openzeppelin/contracts-upgradeable/access/manager/AccessManagedUpgradeable.sol";
 import {AccessManaged} from "@openzeppelin/contracts/access/manager/AccessManaged.sol";
 import {SafeERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {IStakingPlugin, IERC165} from "./interfaces/IStakingPlugin.sol";
@@ -10,24 +12,33 @@ import {ERC20Recoverable} from "../ERC20/utils/ERC20Recoverable.sol";
  * @title StakingPlugin
  * @author Amir Shirif
  * @notice An OMNI Laboratories Contract
- *
- * @notice Handles rewards for staking contracts by implementing the IStakingPlugin interface.
+ * @dev Implements the IStakingPlugin interface to handle rewards for staking contracts.
  */
-contract StakingPlugin is AccessManaged, ERC20Recoverable, IStakingPlugin {
+contract StakingPlugin is
+    Initializable,
+    AccessManagedUpgradeable,
+    ERC20Recoverable,
+    IStakingPlugin
+{
     using SafeERC20 for IERC20;
 
-    // token to be recieved and distributed
-    IERC20 public immutable rewardToken;
+    // The token to be received and distributed as rewards.
+    IERC20 public reward;
 
-    // mapping of users to rewards
+    // Mapping of users to their claimable rewards.
     mapping(address => uint256) public rewards;
 
-    /// @param token The ERC20 token to be used as rewards.
-    constructor(
+    /**
+     * @notice Initializes the staking plugin contract with the given authority and reward token.
+     * @param initialAuthority The initial authority address for access management.
+     * @param token The ERC20 reward token.
+     */
+    function initialize(
         address initialAuthority,
         IERC20 token
-    ) AccessManaged(initialAuthority) {
-        rewardToken = token;
+    ) external initializer {
+        __AccessManaged_init(initialAuthority);
+        reward = token;
     }
 
     /************************************************
@@ -39,9 +50,16 @@ contract StakingPlugin is AccessManaged, ERC20Recoverable, IStakingPlugin {
      * @param account The address of the account whose claimable rewards are being queried.
      * @return The total amount of rewards that the specified account can claim.
      */
-
     function claimable(address account) public view returns (uint256) {
         return rewards[account];
+    }
+
+    /**
+     * @notice Returns the reward token used by the staking plugin.
+     * @return The reward token.
+     */
+    function rewardToken() public view returns (IERC20) {
+        return reward;
     }
 
     /************************************************
@@ -53,35 +71,39 @@ contract StakingPlugin is AccessManaged, ERC20Recoverable, IStakingPlugin {
      * @dev restricted only
      * @param account The account address whose rewards are to be claimed.
      * @param to The recipient address where the rewards will be sent.
+     * @return amount The total amount of rewards that the specified account can claim.
      *
      * Emits a {Claimed} event.
      */
-    function claim(address account, address to) external override restricted {
-        uint256 amount = rewards[account];
-        if (amount == 0) return;
+    function claim(
+        address account,
+        address to
+    ) external override restricted returns (uint256 amount) {
+        amount = rewards[account];
+        if (amount == 0) return 0;
 
         rewards[account] = 0;
-        rewardToken.safeTransfer(to, amount);
+        reward.safeTransfer(to, amount);
         emit Claimed(account, amount);
     }
 
     /**
      * @notice Increases the claimable rewards for a specified account.
      * @dev restricted only
-     * @param benofactory The address from which reward tokens are transferred.
+     * @param benefactor The address from which reward tokens are transferred.
      * @param account The account whose reward balance is to be increased.
      * @param amount The amount of tokens to be added to the claimable rewards.
      *
      * Emits a {ClaimableIncreased} event.
      */
     function increaseClaimable(
-        address benofactory,
+        address benefactor,
         address account,
         uint256 amount
     ) external restricted {
         if (amount == 0) return;
 
-        rewardToken.safeTransferFrom(benofactory, address(this), amount);
+        reward.safeTransferFrom(benefactor, address(this), amount);
         rewards[account] += amount;
         emit ClaimableIncreased(account, amount);
     }

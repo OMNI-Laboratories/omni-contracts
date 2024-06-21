@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.25;
 
-import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {SignatureChecker} from "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 
 /**
  * @title Ownable
@@ -101,14 +101,37 @@ abstract contract Ownable is Initializable {
     }
 
     /************************************************
-     *   internal functions
+     *   verification functions
      ************************************************/
 
-    /// @dev restricts actions to only the owner
+    /**
+     * @dev restricts actions to only the owner
+     * @param hash The hash that was signed
+     * @param signature The signature being verified
+     */
     function _onlyOwner(bytes32 hash, bytes memory signature) internal view {
         if (!_checkSignature(owner(), hash, signature))
             revert UnauthorizedAccess();
     }
+
+    /**
+     * @dev Verifies the signer's address against the provided hash and signature.
+     * @param signer The address of the expected signer.
+     * @param hash The hash of the payload.
+     * @param signature The signature to validate.
+     * @return bool True if the signature is valid, false otherwise.
+     */
+    function _checkSignature(
+        address signer,
+        bytes32 hash,
+        bytes memory signature
+    ) internal view virtual returns (bool) {
+        return SignatureChecker.isValidSignatureNow(signer, hash, signature);
+    }
+
+    /************************************************
+     *   update functions
+     ************************************************/
 
     /**
      * @dev This is the intermidary step and needs to be confirmed by the new owner.
@@ -129,21 +152,6 @@ abstract contract Ownable is Initializable {
     function _acceptOwnership() internal virtual {
         emit OwnershipTransferred(owner(), pendingOwner());
         _accept(pendingOwner());
-    }
-
-    /**
-     * @dev Verifies the signer's address against the provided hash and signature.
-     * @param signer The address of the expected signer.
-     * @param hash The hash of the payload.
-     * @param signature The signature to validate.
-     * @return bool True if the signature is valid, false otherwise.
-     */
-    function _checkSignature(
-        address signer,
-        bytes32 hash,
-        bytes memory signature
-    ) internal view virtual returns (bool) {
-        return SignatureChecker.isValidSignatureNow(signer, hash, signature);
     }
 
     /************************************************

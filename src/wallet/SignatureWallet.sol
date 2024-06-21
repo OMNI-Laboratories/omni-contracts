@@ -7,7 +7,7 @@ import {ERC1271} from "../utils/authorization/ERC1271.sol";
 
 /**
  * @title SignatureWallet
- * @author Amir M. Shirif
+ * @author Amir Shirif
  * @notice A smart contract wallet that is compliant with multiple ERC standards
  */
 contract SignatureWallet is Wallet, Ownable, ERC1271 {
@@ -46,7 +46,4 @@ contract SignatureWallet is Wallet, Ownable, ERC1271 {
     ) external onlyOwner(hash, signature) {
         _execute(payloads, hash, timestamp);
     }
-
-    /// recieve native currency
-    receive() external payable {}
 }

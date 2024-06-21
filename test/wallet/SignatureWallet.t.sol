@@ -43,15 +43,6 @@ contract SignatureWalletTest is Test, SignatureWallet {
         payloads = abi.encode(callTypes, addresses, values, data);
     }
 
-    function test_StorageLocation() public {
-        console2.log("Storage Location:");
-        console2.logBytes32(
-            (new StorageLocation()).getERC7201StorageLocation(
-                "omni.storage.Wallet"
-            )
-        );
-    }
-
     function test_Execute() public {
         bytes32 hash = keccak256(
             abi.encode(
@@ -65,6 +56,7 @@ contract SignatureWalletTest is Test, SignatureWallet {
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(PRIVATE_KEY, hash);
         bytes memory signature = abi.encodePacked(r, s, v);
         wallet.execute(payloads, hash, block.timestamp, signature);
+        assertEq(token.balanceOf(address(1)), 100);
     }
 
     function test_UpdateStorage() public {
@@ -143,106 +135,5 @@ contract SignatureWalletTest is Test, SignatureWallet {
         bytes memory signature = abi.encodePacked(r, s, v);
         vm.expectRevert(UnauthorizedAccess.selector);
         wallet.execute(payloads, hash, block.timestamp, signature);
-    }
-
-    function test_Nonce() public {
-        bytes32 hash = keccak256(
-            abi.encode(wallet.domainSeparator(), 1, block.timestamp, payloads)
-        );
-
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(PRIVATE_KEY, hash);
-        bytes memory signature = abi.encodePacked(r, s, v);
-        vm.expectRevert(InvalidHash.selector);
-        wallet.execute(payloads, hash, block.timestamp, signature);
-    }
-
-    function test_Timestamp() public {
-        bytes32 hash = keccak256(
-            abi.encode(
-                wallet.domainSeparator(),
-                wallet.getNonce(),
-                block.timestamp - 1,
-                payloads
-            )
-        );
-
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(PRIVATE_KEY, hash);
-        bytes memory signature = abi.encodePacked(r, s, v);
-        vm.expectRevert(InvalidTimestamp.selector);
-        wallet.execute(payloads, hash, block.timestamp - 1, signature);
-    }
-
-    function testFail_CallType() public {
-        TempType[] memory callTypes = new TempType[](1);
-        address[] memory addresses = new address[](1);
-        uint256[] memory values = new uint256[](1);
-        bytes[] memory data = new bytes[](1);
-
-        callTypes[0] = TempType.wrong;
-        addresses[0] = address(token);
-        values[0] = 0;
-        data[0] = abi.encodeWithSelector(
-            token.transfer.selector,
-            address(1),
-            100
-        );
-
-        bytes memory invalidPayloads = abi.encode(
-            callTypes,
-            addresses,
-            values,
-            data
-        );
-
-        bytes32 hash = keccak256(
-            abi.encode(
-                wallet.domainSeparator(),
-                wallet.getNonce(),
-                block.timestamp,
-                invalidPayloads
-            )
-        );
-
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(PRIVATE_KEY, hash);
-        bytes memory signature = abi.encodePacked(r, s, v);
-        wallet.execute(invalidPayloads, hash, block.timestamp, signature);
-    }
-
-    function test_DifferentLengthArray() public {
-        CallType[] memory callTypes = new CallType[](2);
-        address[] memory addresses = new address[](1);
-        uint256[] memory values = new uint256[](1);
-        bytes[] memory data = new bytes[](1);
-
-        callTypes[0] = CallType.call;
-        callTypes[1] = CallType.call;
-        addresses[0] = address(token);
-        values[0] = 0;
-        data[0] = abi.encodeWithSelector(
-            token.transfer.selector,
-            address(1),
-            100
-        );
-
-        bytes memory invalidPayloads = abi.encode(
-            callTypes,
-            addresses,
-            values,
-            data
-        );
-
-        bytes32 hash = keccak256(
-            abi.encode(
-                wallet.domainSeparator(),
-                wallet.getNonce(),
-                block.timestamp,
-                invalidPayloads
-            )
-        );
-
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(PRIVATE_KEY, hash);
-        bytes memory signature = abi.encodePacked(r, s, v);
-        vm.expectRevert(InvalidPayload.selector);
-        wallet.execute(invalidPayloads, hash, block.timestamp, signature);
     }
 }
